@@ -10,8 +10,6 @@ export class ChatService {
         private readonly prisma: PrismaService
     ) { }
 
-    async createChat() { }
-
     async getChatMessages(chatId: string): Promise<MessageDto[]> {
         const messages = await this.prisma.message.findMany({
             where: {
@@ -41,6 +39,37 @@ export class ChatService {
                 chatId: properties.dto.chatId,
             },
         });
+    }
+
+    async createChat(properties: { userId: string, userId2: string }) {
+        const { userId, userId2 } = properties;
+
+        const existingChat = await this.prisma.chat.findFirst({
+            where: {
+                users: {
+                    every: {
+                        userId: { in: [userId, userId2] },
+                    },
+                },
+            },
+        });
+
+        if (existingChat) {
+            return existingChat;
+        }
+        const newChat = await this.prisma.chat.create({
+            data: {
+                users: {
+                    create: [
+                        { userId: userId },
+                        { userId: userId2 },
+                    ],
+                },
+            },
+            include: { users: true },
+        });
+
+        return newChat;
     }
 
 }
