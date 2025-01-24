@@ -60,4 +60,10 @@ export class AuthService {
         return { accessToken: token, refreshToken: refresh, email: user.email }
     }
 
+    async getUserById(id: string) {
+        return this.prisma.user.findUnique({
+            where: { id }
+        })
+    }
+
 }

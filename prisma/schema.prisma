@@ -28,6 +28,7 @@ model Chat {
   id       String     @id @default(uuid())
   users    ChatUser[]
   messages Message[]
+  created  DateTime   @default(now())
 }
 
 model Message {
