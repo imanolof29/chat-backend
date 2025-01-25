@@ -57,7 +57,7 @@ export class AuthService {
         const token = this.jwtService.sign(payload)
         const refresh = this.jwtService.sign(payload, { secret: this.configService.get('REFRESH_SECRET'), expiresIn: '30d' },)
 
-        return { accessToken: token, refreshToken: refresh, email: user.email }
+        return { accessToken: token, refreshToken: refresh, email: user.email, id: user.id }
     }
 
     async getUserById(id: string) {

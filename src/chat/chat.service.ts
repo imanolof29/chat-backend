@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma.service";
 import { MessageDto } from "./dto/message.dto";
 import { CreateMessageDto } from "./dto/create-message.dto";
+import { ChatDto } from "./dto/chat.dto";
 
 @Injectable()
 export class ChatService {
@@ -92,15 +93,13 @@ export class ChatService {
             }
         });
 
-        return chats.map((chat) => ({
-            id: chat.id,
-            users: chat.users.map((user) => user.userId),
-            lastMessage: chat.messages[0] ? {
-                content: chat.messages[0].content,
-                senderId: chat.messages[0].senderId,
-                createdAt: chat.messages[0].created
-            } : null
-        }));
+        return chats.map((chat) => (
+            new ChatDto({
+                id: chat.id,
+                users: chat.users.map((user) => user.userId),
+                lastMessage: chat.messages[0] ? chat.messages[0].content : undefined
+            })
+        ));
     }
 
 }
